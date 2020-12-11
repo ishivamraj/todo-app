@@ -70,14 +70,24 @@ filterTodos(todos, filters);
 //   e.target.textContent = "Added a new todo!!";
 // });
 
-
-
-
-
 document.querySelector("#new-todo").addEventListener("input", function (e) {
   filters.searchText = e.target.value;
   filterTodos(todos, filters);
 });
+
+document.querySelector('#form-todo').addEventListener('submit', function(e){
+  e.preventDefault();
+  todos.push({
+    text: e.target.elements.todoName.value,
+    completed: false
+  })
+  filterTodos(todos, filters)
+  e.target.elements.todoName.value = ''
+})
+
+
+
+
 //OTHER METHOD
 // let c = 0;
 // todos.forEach(function(todo, index){
