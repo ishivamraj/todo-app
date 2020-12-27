@@ -1,25 +1,4 @@
-const todos = [
-  {
-    text: "Order cat food",
-    completed: false,
-  },
-  {
-    text: "Clean kitchen",
-    completed: true,
-  },
-  {
-    text: "Buy food",
-    completed: true,
-  },
-  {
-    text: "Do work",
-    completed: false,
-  },
-  {
-    text: "Exercise",
-    completed: true,
-  },
-];
+let todos = [];
 // const sel = document.querySelectorAll("p");
 // sel.forEach(function (wrd) {
 //   if (wrd.textContent.includes("the")) wrd.remove();
@@ -29,20 +8,35 @@ const todos = [
 //   return !todo.completed;
 // });
 
-
-
 const filters = {
   searchText: "",
+  hideCompleted: false,
 };
+
+const userJSON = localStorage.getItem("todos");
+if (userJSON !== null) {
+  todos = JSON.parse(userJSON);
+}
 
 const filterTodos = function (todos, filters) {
   const filtersT = todos.filter(function (todo) {
-    return todo.text.toLowerCase().includes(filters.searchText.toLowerCase());
+    const searchTextMatch = todo.text
+      .toLowerCase()
+      .includes(filters.searchText.toLowerCase());
+    const hideCompletedMatch = !filters.hideCompleted || !todo.completed;
+    return searchTextMatch && hideCompletedMatch;
   });
 
-  const incompleteTodos = filtersT.filter(function(todo){
-    return !todo.completed
-  })
+  // if(filters.hideCompleted){
+  // return !todo.completed
+  // }
+  // else {
+  // return true
+  // }
+
+  const incompleteTodos = filtersT.filter(function (todo) {
+    return !todo.completed;
+  });
 
   document.querySelector("#todos").innerHTML = "";
 
@@ -75,18 +69,22 @@ document.querySelector("#new-todo").addEventListener("input", function (e) {
   filterTodos(todos, filters);
 });
 
-document.querySelector('#form-todo').addEventListener('submit', function(e){
+document.querySelector("#form-todo").addEventListener("submit", function (e) {
   e.preventDefault();
   todos.push({
     text: e.target.elements.todoName.value,
-    completed: false
-  })
-  filterTodos(todos, filters)
-  e.target.elements.todoName.value = ''
-})
+    completed: false,
+  });
+  const todosJSON = JSON.stringify(todos)
+  localStorage.setItem('todos', todosJSON)
+  filterTodos(todos, filters);
+  e.target.elements.todoName.value = "";
+});
 
-
-
+document.querySelector("#check-box").addEventListener("change", function (e) {
+  filters.hideCompleted = e.target.checked;
+  filterTodos(todos, filters);
+});
 
 //OTHER METHOD
 // let c = 0;
