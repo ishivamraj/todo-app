@@ -1,4 +1,4 @@
-let todos = [];
+const todos = getSavedTodos()
 // const sel = document.querySelectorAll("p");
 // sel.forEach(function (wrd) {
 //   if (wrd.textContent.includes("the")) wrd.remove();
@@ -11,44 +11,6 @@ let todos = [];
 const filters = {
   searchText: "",
   hideCompleted: false,
-};
-
-const userJSON = localStorage.getItem("todos");
-if (userJSON !== null) {
-  todos = JSON.parse(userJSON);
-}
-
-const filterTodos = function (todos, filters) {
-  const filtersT = todos.filter(function (todo) {
-    const searchTextMatch = todo.text
-      .toLowerCase()
-      .includes(filters.searchText.toLowerCase());
-    const hideCompletedMatch = !filters.hideCompleted || !todo.completed;
-    return searchTextMatch && hideCompletedMatch;
-  });
-
-  // if(filters.hideCompleted){
-  // return !todo.completed
-  // }
-  // else {
-  // return true
-  // }
-
-  const incompleteTodos = filtersT.filter(function (todo) {
-    return !todo.completed;
-  });
-
-  document.querySelector("#todos").innerHTML = "";
-
-  const renderTodos = filtersT.forEach(function (todo) {
-    const newEl = document.createElement("p");
-    newEl.textContent = todo.text;
-    document.querySelector("#todos").append(newEl);
-  });
-
-  const summary = document.createElement("h2");
-  summary.textContent = `You have ${incompleteTodos.length} todos left`;
-  document.querySelector("#todos").appendChild(summary);
 };
 
 filterTodos(todos, filters);
@@ -75,8 +37,7 @@ document.querySelector("#form-todo").addEventListener("submit", function (e) {
     text: e.target.elements.todoName.value,
     completed: false,
   });
-  const todosJSON = JSON.stringify(todos)
-  localStorage.setItem('todos', todosJSON)
+  saveTodos(todos)
   filterTodos(todos, filters);
   e.target.elements.todoName.value = "";
 });
