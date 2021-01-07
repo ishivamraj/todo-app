@@ -21,6 +21,7 @@ const filterTodos = function (todos, filters) {
       .toLowerCase()
       .includes(filters.searchText.toLowerCase());
     const hideCompletedMatch = !filters.hideCompleted || !todo.completed;
+    debugger;
     return searchTextMatch && hideCompletedMatch;
   });
 
@@ -41,26 +42,30 @@ const filterTodos = function (todos, filters) {
     console.log(generateTodoDOM(todo));
     document.querySelector("#todos").append(generateTodoDOM(todo));
   });
-  document.querySelector("#todos").appendChild(generateSummaryDOM(incompleteTodos));
+  document
+    .querySelector("#todos")
+    .appendChild(generateSummaryDOM(incompleteTodos));
 };
 
 //Get the DOM elements for individual todo
 const generateTodoDOM = function (todo) {
-  const newEl = document.createElement("p");
-  if (todo.text.length > 0) {
-    newEl.textContent = todo.text;
-    return newEl;
-  } else {
-    newEl.textContent = "unnamed Task";
-    return newEl;
-  }
+  const newEl = document.createElement("div");
+  const p = document.createElement("span");
+  const button = document.createElement("button");
+  //Setup todo checkbox
+  const checkBox = document.createElement("input");
+  checkBox.setAttribute("type", "checkbox");
+  button.textContent = "x";
+  newEl.appendChild(checkBox);
+  p.textContent = todo.text;
+  newEl.appendChild(p);
+  newEl.appendChild(button);
+  return newEl;
 };
-
-
 
 //Get the DOM elements for list Summary
 const generateSummaryDOM = function (incompleteTodos) {
   const summary = document.createElement("h2");
   summary.textContent = `You have ${incompleteTodos.length} todos left`;
-  return summary
+  return summary;
 };
