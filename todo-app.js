@@ -34,13 +34,14 @@ document.querySelector("#new-todo").addEventListener("input", function (e) {
 document.querySelector("#form-todo").addEventListener("submit", function (e) {
   e.preventDefault();
   todos.push({
+    id: uuidv4(),
     text: e.target.elements.todoName.value,
     completed: false,
   });
   saveTodos(todos)
   filterTodos(todos, filters);
   e.target.elements.todoName.value = "";
-});
+})
 
 document.querySelector("#check-box").addEventListener("change", function (e) {
   filters.hideCompleted = e.target.checked;

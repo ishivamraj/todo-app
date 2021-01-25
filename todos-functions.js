@@ -13,6 +13,24 @@ const saveTodos = function (todos) {
   const todosJSON = JSON.stringify(todos);
   localStorage.setItem("todos", todosJSON);
 };
+//Remove Todos from array by id
+const removeTodos = function (id) {
+  const indexTodo = todos.findIndex(function (todo) {
+    return todo.id === id;
+  });
+  if (indexTodo > -1) {
+    todos.splice(indexTodo, 1);
+  }
+};
+
+//Checkbox modify. Toggle a completed value for a given todo
+const toggleCheckbox = function (id){
+  const todo = todos.find(function(todo){
+    return todo.id===id;
+  })
+  if(todo!=undefined)
+  todo.completed=!todo.completed;
+}
 
 //Render todos based on filters
 const filterTodos = function (todos, filters) {
@@ -21,7 +39,6 @@ const filterTodos = function (todos, filters) {
       .toLowerCase()
       .includes(filters.searchText.toLowerCase());
     const hideCompletedMatch = !filters.hideCompleted || !todo.completed;
-    debugger;
     return searchTextMatch && hideCompletedMatch;
   });
 
@@ -52,14 +69,27 @@ const generateTodoDOM = function (todo) {
   const newEl = document.createElement("div");
   const p = document.createElement("span");
   const button = document.createElement("button");
-  //Setup todo checkbox
   const checkBox = document.createElement("input");
+  //Setup todo checkbox
   checkBox.setAttribute("type", "checkbox");
-  button.textContent = "x";
   newEl.appendChild(checkBox);
+  checkBox.checked = todo.completed;
+  checkBox.addEventListener("change", function (e) {
+    toggleCheckbox(todo.id);
+    saveTodos(todos);
+    filterTodos(todos, filters);
+  });
+  //Setp the todo text
   p.textContent = todo.text;
   newEl.appendChild(p);
+  //Setup the button todo
+  button.textContent = "x";
   newEl.appendChild(button);
+  button.addEventListener("click", function (e) {
+    removeTodos(todo.id);
+    saveTodos(todos);
+    filterTodos(todos, filters);
+  });
   return newEl;
 };
 
